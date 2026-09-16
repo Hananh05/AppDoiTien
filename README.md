@@ -102,7 +102,7 @@ Tên `feartures` được giữ theo dự án hiện tại. Nếu đổi thành 
 |---|---|
 | Nguyễn Tùng Dương | 2823230371 |
 | Nguyễn Anh Hán | 2823156551 |
-| Ma Thi Quỳnh Lan | 2823230454 |
+| Ma Thị Quỳnh Lan | 2823230454 |
 
 ## Kiểm tra bản sửa
 
