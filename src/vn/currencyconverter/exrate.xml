@@ -1,0 +1,8 @@
+<Exrates>
+  <DateTime>9/16/2026 4:00:00 PM</DateTime>
+  <Exrate CurrencyCode="USD" CurrencyName="DO LA MY" Buy="25250" Transfer="25280" Sell="25470"/>
+  <Exrate CurrencyCode="EUR" CurrencyName="EURO" Buy="27500" Transfer="27600" Sell="28100"/>
+  <Exrate CurrencyCode="JPY" CurrencyName="YEN NHAT" Buy="168.50" Transfer="170.10" Sell="178.25"/>
+  <Exrate CurrencyCode="GBP" CurrencyName="BANG ANH" Buy="32800" Transfer="33000" Sell="33900"/>
+  <Exrate CurrencyCode="AUD" CurrencyName="DO LA UC" Buy="16500" Transfer="16700" Sell="17200"/>
+</Exrates>
