@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-
 import vn.currencyconverter.core.theme.AppTheme;
 import vn.currencyconverter.feartures.converter.ui.ConverterPanel;
 import vn.currencyconverter.feartures.exchange_rate.ui.ExchangeRatePanel;
@@ -60,7 +59,7 @@ public class MainFrame extends JFrame {
         new LinkedHashMap<>();
 
     public MainFrame() {
-        setTitle("NHÓM 4 – ỨNG DỤNG QUY ĐỔI TIỀN TỆ");
+        setTitle("NHÓM 5 – ỨNG DỤNG QUY ĐỔI TIỀN TỆ");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1100, 760);
         setMinimumSize(new Dimension(950, 650));
@@ -100,7 +99,7 @@ public class MainFrame extends JFrame {
         header.setBorder(new EmptyBorder(18, 24, 18, 24));
 
         JLabel title = new JLabel(
-            "NHÓM 4 – ỨNG DỤNG QUY ĐỔI TIỀN TỆ"
+            "NHÓM 5 – ỨNG DỤNG QUY ĐỔI TIỀN TỆ"
         );
 
         title.setForeground(Color.WHITE);
@@ -121,7 +120,7 @@ public class MainFrame extends JFrame {
         sidebar.setBackground(AppTheme.SIDEBAR);
         sidebar.setBorder(new EmptyBorder(24, 12, 24, 12));
 
-        JLabel group = new JLabel("NHÓM 4");
+        JLabel group = new JLabel("NHÓM 5");
         group.setForeground(Color.WHITE);
         group.setFont(
             new Font(Font.SANS_SERIF, Font.BOLD, 26)
