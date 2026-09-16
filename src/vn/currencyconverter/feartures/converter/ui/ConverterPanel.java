@@ -7,6 +7,36 @@ import javax.swing.border.EmptyBorder;
 import vn.currencyconverter.core.theme.AppTheme;
 
 public class ConverterPanel extends JPanel {
+    private java.util.Map<String, vn.currencyconverter.feartures.exchange_rate.model.ExchangeRate> rates = new java.util.HashMap<>();
+    private java.util.function.Consumer<vn.currencyconverter.feartures.history.model.ConversionRecord> onConverted = record -> {};
+    public void onConverted(java.util.function.Consumer<vn.currencyconverter.feartures.history.model.ConversionRecord> action) { onConverted = action; }
+    public void setRates(java.util.List<vn.currencyconverter.feartures.exchange_rate.model.ExchangeRate> values) {
+        rates.clear();
+        for (var value : values) rates.put(value.getCurrencyCode(), value);
+        convertButton.setEnabled(!rates.isEmpty());
+        resultLabel.setText("— VND");
+    }
+    private void convert() {
+        try {
+            if (!convertButton.isEnabled()) return;
+            String input = amountField.getText().trim();
+            if (!input.matches("[0-9]+([.,][0-9]+)?")) throw new IllegalArgumentException("Nhập số tiền, ví dụ 100 hoặc 100,50; không dùng dấu phân cách hàng nghìn.");
+            var amount = new java.math.BigDecimal(input.replace(',', '.'));
+            String code = currencyBox.getSelectedItem().toString().substring(0,3);
+            var rate = rates.get(code);
+            if (rate == null) throw new IllegalArgumentException("File chưa có tỷ giá " + code + ". Hãy bổ sung dữ liệu hoặc chọn ngoại tệ khác.");
+            var price = transferRadio.isSelected() ? rate.getTransferRate() : rate.getBuyRate();
+            if (price == null) throw new IllegalArgumentException("Không có tỷ giá cho hình thức đã chọn.");
+            var value = new vn.currencyconverter.feartures.converter.service.CurrencyConverterService().convertToVnd(amount, price);
+            resultLabel.setText(java.text.NumberFormat.getNumberInstance(java.util.Locale.forLanguageTag("vi-VN")).format(value) + " VND");
+            var type = transferRadio.isSelected() ? vn.currencyconverter.feartures.exchange_rate.model.RateType.TRANSFER_BUY : vn.currencyconverter.feartures.exchange_rate.model.RateType.BUY;
+            onConverted.accept(new vn.currencyconverter.feartures.history.model.ConversionRecord(java.time.LocalDateTime.now(), code, amount, price, value, type));
+        } catch (IllegalArgumentException e) {
+            resultLabel.setText("— VND");
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Kiểm tra dữ liệu", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
 
     private final JTextField amountField = new JTextField();
 
@@ -33,6 +63,16 @@ public class ConverterPanel extends JPanel {
         new JLabel("— VND", SwingConstants.CENTER);
 
     public ConverterPanel() {
+        convertButton.addActionListener(e -> convert());
+        amountField.addActionListener(e -> convert());
+        currencyBox.addActionListener(e -> resultLabel.setText("— VND"));
+        transferRadio.addActionListener(e -> resultLabel.setText("— VND"));
+        cashRadio.addActionListener(e -> resultLabel.setText("— VND"));
+        amountField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            public void insertUpdate(javax.swing.event.DocumentEvent e) { resultLabel.setText("— VND"); }
+            public void removeUpdate(javax.swing.event.DocumentEvent e) { resultLabel.setText("— VND"); }
+            public void changedUpdate(javax.swing.event.DocumentEvent e) { resultLabel.setText("— VND"); }
+        });
         setLayout(new BorderLayout(20, 20));
         AppTheme.stylePage(this);
 
@@ -49,7 +89,7 @@ public class ConverterPanel extends JPanel {
         add(body, BorderLayout.CENTER);
 
         add(
-            new JLabel("Nguồn: Vietcombank • Chưa tải tỷ giá"),
+            new JLabel("Dữ liệu mẫu • CAD/SGD giả định • Không phải tỷ giá hiện hành"),
             BorderLayout.SOUTH
         );
     }

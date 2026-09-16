@@ -7,6 +7,18 @@ import javax.swing.table.DefaultTableModel;
 import vn.currencyconverter.core.theme.AppTheme;
 
 public class ExchangeRatePanel extends JPanel {
+    private final JButton refreshButton = AppTheme.button("Đọc lại file XML");
+    private DefaultTableModel tableModel;
+    private final JLabel status = new JLabel("Chưa tải dữ liệu");
+    public void onRefresh(Runnable action) { refreshButton.addActionListener(e -> action.run()); }
+    public void setBusy(boolean busy) { refreshButton.setEnabled(!busy); }
+    public void setStatus(String value) { status.setText(value); }
+    public void setRates(java.util.List<vn.currencyconverter.feartures.exchange_rate.model.ExchangeRate> rates) {
+        tableModel.setRowCount(0);
+        var allowed = java.util.Set.of("USD", "JPY", "GBP", "CAD", "AUD", "SGD");
+        for (var r : rates) if (allowed.contains(r.getCurrencyCode())) tableModel.addRow(new Object[]{r.getCurrencyCode(), r.getCurrencyName(), r.getBuyRate(), r.getTransferRate(), r.getSellRate()});
+    }
+
 
     public ExchangeRatePanel() {
         setLayout(new BorderLayout(20, 20));
@@ -20,9 +32,9 @@ public class ExchangeRatePanel extends JPanel {
             BorderLayout.CENTER
         );
 
-        JButton refreshButton = AppTheme.button("Cập nhật");
-        refreshButton.setEnabled(false);
-        refreshButton.setToolTipText("Chưa kết nối API");
+        
+        refreshButton.setEnabled(true);
+        refreshButton.setToolTipText("Đọc exrate.xml trên máy, không gọi API trực tuyến");
 
         header.add(refreshButton, BorderLayout.EAST);
         add(header, BorderLayout.NORTH);
@@ -49,6 +61,7 @@ public class ExchangeRatePanel extends JPanel {
                 }
             };
 
+        tableModel = model;
         JTable table = new JTable(model);
         table.setRowHeight(40);
         table.setFillsViewportHeight(true);
@@ -60,9 +73,7 @@ public class ExchangeRatePanel extends JPanel {
         add(new JScrollPane(table), BorderLayout.CENTER);
 
         add(
-            new JLabel(
-                "Chưa tải tỷ giá • Đơn vị: VND / 1 đơn vị ngoại tệ"
-            ),
+            status,
             BorderLayout.SOUTH
         );
     }

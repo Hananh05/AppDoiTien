@@ -5,4 +5,7 @@
   <Exrate CurrencyCode="JPY" CurrencyName="YEN NHAT" Buy="168.50" Transfer="170.10" Sell="178.25"/>
   <Exrate CurrencyCode="GBP" CurrencyName="BANG ANH" Buy="32800" Transfer="33000" Sell="33900"/>
   <Exrate CurrencyCode="AUD" CurrencyName="DO LA UC" Buy="16500" Transfer="16700" Sell="17200"/>
+  <!-- CAD và SGD: tỷ giá giả định chỉ dùng kiểm thử, không phải báo giá ngân hàng. -->
+  <Exrate CurrencyCode="CAD" CurrencyName="Đô la Canada" Buy="18000" Transfer="18100" Sell="18500"/>
+  <Exrate CurrencyCode="SGD" CurrencyName="Đô la Singapore" Buy="19000" Transfer="19100" Sell="19500"/>
 </Exrates>

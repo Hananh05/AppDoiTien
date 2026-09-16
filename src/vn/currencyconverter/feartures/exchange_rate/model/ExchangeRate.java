@@ -6,6 +6,9 @@ public class ExchangeRate {
     private String currencyCode; 
     private String currencyName; 
     private BigDecimal buyRate;  
+    private BigDecimal transferRate;
+    public BigDecimal getTransferRate() { return transferRate; }
+    public void setTransferRate(BigDecimal value) { transferRate = value; }
     private BigDecimal sellRate; 
 
     public ExchangeRate() {}

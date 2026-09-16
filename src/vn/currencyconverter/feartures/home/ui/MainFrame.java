@@ -13,6 +13,42 @@ import vn.currencyconverter.feartures.history.ui.HistoryPanel;
 
 public class MainFrame extends JFrame {
 
+    private final ConverterPanel converterPanel = new ConverterPanel();
+    private final ExchangeRatePanel ratePanel = new ExchangeRatePanel();
+    private final HistoryPanel historyPanel = new HistoryPanel();
+    private final vn.currencyconverter.feartures.history.service.ConversionHistoryService historyService = new vn.currencyconverter.feartures.history.service.ConversionHistoryService();
+    private final java.util.concurrent.ExecutorService historyExecutor = java.util.concurrent.Executors.newSingleThreadExecutor();
+    private void loadHistory() {
+        historyExecutor.submit(() -> {
+            try {
+                var records = historyService.getAllRecords();
+                SwingUtilities.invokeLater(() -> historyPanel.setRecords(records));
+            } catch (Exception e) { SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(this, "Không đọc được lịch sử: " + e.getMessage())); }
+        });
+    }
+    private void reloadRates() {
+        ratePanel.setBusy(true);
+        ratePanel.setStatus("Đang đọc exrate.xml...");
+        converterPanel.setRates(java.util.List.of());
+        new SwingWorker<java.util.List<vn.currencyconverter.feartures.exchange_rate.model.ExchangeRate>, Void>() {
+            protected java.util.List<vn.currencyconverter.feartures.exchange_rate.model.ExchangeRate> doInBackground() {
+                return new vn.currencyconverter.feartures.exchange_rate.service.VietcombankRateService().getLatestRates();
+            }
+            protected void done() {
+                ratePanel.setBusy(false);
+                try {
+                    var rates = get();
+                    converterPanel.setRates(rates);
+                    ratePanel.setRates(rates);
+                    ratePanel.setStatus("Dữ liệu mẫu từ exrate.xml • CAD/SGD giả định để kiểm thử");
+                } catch (Exception e) {
+                    ratePanel.setRates(java.util.List.of());
+                    ratePanel.setStatus("Tải thất bại. Kiểm tra exrate.xml rồi bấm đọc lại.");
+                    JOptionPane.showMessageDialog(MainFrame.this, e.getCause() == null ? e.getMessage() : e.getCause().getMessage(), "Không tải được tỷ giá", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }.execute();
+    }
     private final CardLayout cardLayout = new CardLayout();
     private final JPanel content = new JPanel(cardLayout);
 
@@ -30,13 +66,28 @@ public class MainFrame extends JFrame {
         add(createHeader(), BorderLayout.NORTH);
         add(createSidebar(), BorderLayout.WEST);
 
-        content.add(new ConverterPanel(), "converter");
-        content.add(new ExchangeRatePanel(), "rates");
-        content.add(new HistoryPanel(), "history");
+        content.add(converterPanel, "converter");
+        content.add(ratePanel, "rates");
+        content.add(historyPanel, "history");
 
         add(content, BorderLayout.CENTER);
 
         showScreen("converter");
+        ratePanel.onRefresh(this::reloadRates);
+        converterPanel.onConverted(record -> historyExecutor.submit(() -> {
+            try {
+                historyService.saveRecord(record);
+                var records = historyService.getAllRecords();
+                SwingUtilities.invokeLater(() -> historyPanel.setRecords(records));
+            } catch (Exception e) {
+                SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(this, "Đã tính kết quả nhưng không thể lưu/đọc lịch sử: " + e.getMessage()));
+            }
+        }));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent e) { historyExecutor.shutdown(); }
+        });
+        loadHistory();
+        reloadRates();
     }
 
     private JPanel createHeader() {

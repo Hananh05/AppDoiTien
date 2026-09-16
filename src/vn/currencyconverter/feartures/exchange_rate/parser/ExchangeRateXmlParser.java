@@ -1,50 +1,36 @@
 package vn.currencyconverter.feartures.exchange_rate.parser;
-
 import vn.currencyconverter.feartures.exchange_rate.model.ExchangeRate;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
+import java.util.*;
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.xml.sax.InputSource;
+import org.w3c.dom.*;
 public class ExchangeRateXmlParser {
-
-    public static List<ExchangeRate> parse(String xmlData) {
-        List<ExchangeRate> rates = new ArrayList<>();
+    public static List<ExchangeRate> parse(String xml) {
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(new InputSource(new StringReader(xmlData)));
-
-            NodeList nList = doc.getElementsByTagName("Exrate");
-
-            for (int i = 0; i < nList.getLength(); i++) {
-                Node node = nList.item(i);
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element element = (Element) node;
-
-                    String code = element.getAttribute("CurrencyCode");
-                    String name = element.getAttribute("CurrencyName");
-
-                    String buyStr = element.getAttribute("Buy").replace(",", "").trim();
-                    String sellStr = element.getAttribute("Sell").replace(",", "").trim();
-
-                    BigDecimal buyRate = buyStr.isEmpty() ? BigDecimal.ZERO : new BigDecimal(buyStr);
-                    BigDecimal sellRate = sellStr.isEmpty() ? BigDecimal.ZERO : new BigDecimal(sellStr);
-
-                    rates.add(new ExchangeRate(code, name, buyRate, sellRate));
-                }
+            var f = DocumentBuilderFactory.newInstance();
+            f.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            f.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            f.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            var doc = f.newDocumentBuilder().parse(new InputSource(new StringReader(xml)));
+            var nodes = doc.getElementsByTagName("Exrate");
+            List<ExchangeRate> rates = new ArrayList<>();
+            for (int i=0; i<nodes.getLength(); i++) {
+                Element e = (Element)nodes.item(i);
+                var rate = new ExchangeRate(e.getAttribute("CurrencyCode"), e.getAttribute("CurrencyName"), number(e.getAttribute("Buy")), number(e.getAttribute("Sell")));
+                rate.setTransferRate(number(e.getAttribute("Transfer")));
+                rates.add(rate);
             }
-        } catch (Exception e) {
-            System.err.println("[Backend Error] Bóc tách XML thất bại: " + e.getMessage());
-        }
-        return rates;
+            if (rates.isEmpty()) throw new IllegalArgumentException("File không chứa tỷ giá.");
+            return rates;
+        } catch (Exception e) { throw new IllegalArgumentException("Không đọc được XML: " + e.getMessage(), e); }
+    }
+    private static BigDecimal number(String s) {
+        s=s.trim().replace(",", "");
+        if (s.isEmpty() || s.equals("-")) return null;
+        BigDecimal n = new BigDecimal(s);
+        return n.signum()>0 ? n : null;
     }
 }

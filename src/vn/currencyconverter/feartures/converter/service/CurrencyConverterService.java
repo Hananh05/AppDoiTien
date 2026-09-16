@@ -6,7 +6,7 @@ import java.math.RoundingMode;
 public class CurrencyConverterService {
 
     public BigDecimal convertToVnd(BigDecimal amount, BigDecimal rate) {
-        if (amount == null || rate == null || amount.compareTo(BigDecimal.ZERO) < 0) {
+        if (amount == null || rate == null || amount.signum() <= 0 || rate.signum() <= 0) {
             throw new IllegalArgumentException("Số tiền hoặc tỉ giá không hợp lệ.");
         }
         

@@ -5,62 +5,108 @@ import vn.currencyconverter.feartures.exchange_rate.model.RateType;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ConversionHistoryService {
 
-    // Nơi lưu trữ file lịch sử (Nằm ngay ngoài thư mục gốc của project)
-    private static final String FILE_PATH = "transaction_history.txt";
+    private static final Path FILE_PATH =
+        Paths.get("transaction_history.txt");
 
-    /**
-     * Hàm lưu 1 giao dịch mới vào cuối file
-     */
-    public void saveRecord(ConversionRecord record) {
-        // Tham số 'true' trong FileWriter nghĩa là ghi nối tiếp (append) vào cuối file
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
+    private static final DateTimeFormatter FORMATTER =
+        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    // Lưu giao dịch. Tầng giao diện sẽ xử lý lỗi IOException.
+    public void saveRecord(ConversionRecord record) throws IOException {
+        Objects.requireNonNull(record, "Giao dịch không được null");
+
+        try (BufferedWriter writer = Files.newBufferedWriter(
+                FILE_PATH,
+                StandardCharsets.UTF_8,
+                StandardOpenOption.CREATE,
+                StandardOpenOption.APPEND)) {
+
             writer.write(record.toCsvLine());
             writer.newLine();
-            System.out.println("[Backend] Da luu lich su giao dich xuong file.");
-        } catch (IOException e) {
-            System.err.println("[Backend Error] Khong the ghi file lich su: " + e.getMessage());
         }
     }
 
-    /**
-     * Hàm đọc toàn bộ lịch sử lên cho tầng UI hiển thị vào Bảng (Table)
-     */
-    public List<ConversionRecord> getAllRecords() {
+    // Đọc lịch sử. File chưa tồn tại thì trả về danh sách rỗng.
+    public List<ConversionRecord> getAllRecords() throws IOException {
         List<ConversionRecord> records = new ArrayList<>();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+        try (BufferedReader reader = Files.newBufferedReader(
+                FILE_PATH, StandardCharsets.UTF_8)) {
+
             String line;
-            while ((line = reader.readLine()) != null) {
-                // Tách dữ liệu dựa vào dấu phẩy
-                String[] parts = line.split(",");
-                if (parts.length == 6) {
-                    LocalDateTime time = LocalDateTime.parse(parts[0], formatter);
-                    String code = parts[1];
-                    BigDecimal amount = new BigDecimal(parts[2]);
-                    BigDecimal rate = new BigDecimal(parts[3]);
-                    BigDecimal result = new BigDecimal(parts[4]);
-                    RateType type = RateType.valueOf(parts[5]); // Chuyển chuỗi thành Enum
+            int lineNumber = 0;
 
-                    records.add(new ConversionRecord(time, code, amount, rate, result, type));
+            while ((line = reader.readLine()) != null) {
+                lineNumber++;
+
+                if (line.trim().isEmpty()) {
+                    continue;
                 }
+
+                records.add(parseRecord(line, lineNumber));
             }
-        } catch (IOException e) {
-            // Lỗi này xảy ra khi file chưa tồn tại (chưa có ai đổi tiền lần nào) -> Bỏ qua
-            System.out.println("[Backend] File lich su trong hoac chua duoc tao.");
+
+        } catch (NoSuchFileException e) {
+            return records;
         }
 
         return records;
+    }
+
+    private ConversionRecord parseRecord(
+            String line, int lineNumber
+    ) throws IOException {
+
+        String[] parts = line.split(",", -1);
+
+        if (parts.length != 6) {
+            throw new IOException(
+                "Dòng " + lineNumber + " phải có đúng 6 trường dữ liệu."
+            );
+        }
+
+        try {
+            LocalDateTime time =
+                LocalDateTime.parse(parts[0].trim(), FORMATTER);
+
+            String code = parts[1].trim();
+
+            if (code.isEmpty()) {
+                throw new IllegalArgumentException("Mã tiền bị trống");
+            }
+
+            BigDecimal amount = new BigDecimal(parts[2].trim());
+            BigDecimal rate = new BigDecimal(parts[3].trim());
+            BigDecimal result = new BigDecimal(parts[4].trim());
+
+            RateType type = RateType.valueOf(parts[5].trim());
+
+            return new ConversionRecord(
+                time, code, amount, rate, result, type
+            );
+
+        } catch (DateTimeParseException | IllegalArgumentException e) {
+            throw new IOException(
+                "Dữ liệu lịch sử không hợp lệ tại dòng " + lineNumber,
+                e
+            );
+        }
     }
 }
