@@ -1,4 +1,4 @@
-# NHÓM 4 – ỨNG DỤNG QUY ĐỔI TIỀN TỆ
+# NHÓM 5 – ỨNG DỤNG QUY ĐỔI TIỀN TỆ
 
 Ứng dụng desktop viết bằng Java Swing, quy đổi USD, JPY, GBP, CAD, AUD và SGD sang VND. Giao diện tông hồng gồm ba màn hình: Quy đổi, Bảng tỷ giá và Lịch sử.
 
@@ -96,7 +96,7 @@ Tên `feartures` được giữ theo dự án hiện tại. Nếu đổi thành 
 | Không tìm thấy class | Chạy tại thư mục gốc, biên dịch toàn bộ `src`, kiểm tra package/import |
 | Không lưu được lịch sử | Kiểm tra quyền ghi vào thư mục chạy |
 
-## Thành viên Nhóm 4
+## Thành viên Nhóm 5
 
 | Họ tên | Mã sinh viên |
 |---|---|
