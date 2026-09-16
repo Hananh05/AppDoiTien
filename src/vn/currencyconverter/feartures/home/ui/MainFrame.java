@@ -135,8 +135,46 @@ public class MainFrame extends JFrame {
         addMenu(sidebar, "Lịch sử", "history");
 
         sidebar.add(Box.createVerticalGlue());
+        sidebar.add(createMembersPanel());
 
         return sidebar;
+    }
+
+    private JPanel createMembersPanel() {
+        JPanel panel = new JPanel();
+        panel.setOpaque(false);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(220, 120, 160)),
+            new EmptyBorder(14, 0, 0, 0)
+        ));
+
+        JLabel heading = new JLabel("THÀNH VIÊN");
+        heading.setForeground(Color.WHITE);
+        heading.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
+        panel.add(heading);
+        panel.add(Box.createVerticalStrut(12));
+
+        String[][] members = {
+            {"Nguyễn Tùng Dương", "2823230371"},
+            {"Nguyễn Anh Hán", "2823156551"},
+            {"Ma Thị Quỳnh Lan", "2823230454"}
+        };
+        for (String[] member : members) {
+            JLabel name = new JLabel(member[0]);
+            name.setForeground(Color.WHITE);
+            name.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 13));
+            JLabel studentId = new JLabel("MSV: " + member[1]);
+            studentId.setForeground(new Color(255, 220, 235));
+            studentId.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+            panel.add(name);
+            panel.add(Box.createVerticalStrut(3));
+            panel.add(studentId);
+            panel.add(Box.createVerticalStrut(12));
+        }
+        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, panel.getPreferredSize().height));
+        return panel;
     }
 
     private void addMenu(
