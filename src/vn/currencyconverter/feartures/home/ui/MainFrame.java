@@ -13,6 +13,7 @@ import vn.currencyconverter.feartures.history.ui.HistoryPanel;
 
 public class MainFrame extends JFrame {
 
+    private final vn.currencyconverter.feartures.exchange_rate.service.VietcombankRateService rateService = new vn.currencyconverter.feartures.exchange_rate.service.VietcombankRateService();
     private final ConverterPanel converterPanel = new ConverterPanel();
     private final ExchangeRatePanel ratePanel = new ExchangeRatePanel();
     private final HistoryPanel historyPanel = new HistoryPanel();
@@ -28,11 +29,12 @@ public class MainFrame extends JFrame {
     }
     private void reloadRates() {
         ratePanel.setBusy(true);
-        ratePanel.setStatus("Đang đọc exrate.xml...");
+        ratePanel.setStatus("Đang kết nối Vietcombank...");
         converterPanel.setRates(java.util.List.of());
+        converterPanel.setSourceStatus("Đang tải tỷ giá trực tuyến...");
         new SwingWorker<java.util.List<vn.currencyconverter.feartures.exchange_rate.model.ExchangeRate>, Void>() {
             protected java.util.List<vn.currencyconverter.feartures.exchange_rate.model.ExchangeRate> doInBackground() {
-                return new vn.currencyconverter.feartures.exchange_rate.service.VietcombankRateService().getLatestRates();
+                return rateService.getLatestRates();
             }
             protected void done() {
                 ratePanel.setBusy(false);
@@ -40,10 +42,12 @@ public class MainFrame extends JFrame {
                     var rates = get();
                     converterPanel.setRates(rates);
                     ratePanel.setRates(rates);
-                    ratePanel.setStatus("Dữ liệu mẫu từ exrate.xml • CAD/SGD giả định để kiểm thử");
+                    ratePanel.setStatus("Vietcombank • Công bố: " + rateService.getPublishedAt());
+                    converterPanel.setSourceStatus("Vietcombank • Công bố: " + rateService.getPublishedAt());
                 } catch (Exception e) {
                     ratePanel.setRates(java.util.List.of());
-                    ratePanel.setStatus("Tải thất bại. Kiểm tra exrate.xml rồi bấm đọc lại.");
+                    converterPanel.setSourceStatus("Chưa có tỷ giá trực tuyến • Quy đổi đang khóa");
+                    ratePanel.setStatus("Kết nối thất bại. Bấm Cập nhật trực tuyến để thử lại.");
                     JOptionPane.showMessageDialog(MainFrame.this, e.getCause() == null ? e.getMessage() : e.getCause().getMessage(), "Không tải được tỷ giá", JOptionPane.ERROR_MESSAGE);
                 }
             }

@@ -7,7 +7,7 @@ import javax.swing.table.DefaultTableModel;
 import vn.currencyconverter.core.theme.AppTheme;
 
 public class ExchangeRatePanel extends JPanel {
-    private final JButton refreshButton = AppTheme.button("Đọc lại file XML");
+    private final JButton refreshButton = AppTheme.button("Cập nhật trực tuyến");
     private DefaultTableModel tableModel;
     private final JLabel status = new JLabel("Chưa tải dữ liệu");
     public void onRefresh(Runnable action) { refreshButton.addActionListener(e -> action.run()); }
@@ -34,7 +34,7 @@ public class ExchangeRatePanel extends JPanel {
 
         
         refreshButton.setEnabled(true);
-        refreshButton.setToolTipText("Đọc exrate.xml trên máy, không gọi API trực tuyến");
+        refreshButton.setToolTipText("Lấy tỷ giá trực tiếp từ Vietcombank");
 
         header.add(refreshButton, BorderLayout.EAST);
         add(header, BorderLayout.NORTH);

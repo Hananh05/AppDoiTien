@@ -7,6 +7,8 @@ import javax.swing.border.EmptyBorder;
 import vn.currencyconverter.core.theme.AppTheme;
 
 public class ConverterPanel extends JPanel {
+    private final JLabel sourceStatus = new JLabel("Chưa có tỷ giá trực tuyến");
+    public void setSourceStatus(String text) { sourceStatus.setText(text); }
     private java.util.Map<String, vn.currencyconverter.feartures.exchange_rate.model.ExchangeRate> rates = new java.util.HashMap<>();
     private java.util.function.Consumer<vn.currencyconverter.feartures.history.model.ConversionRecord> onConverted = record -> {};
     public void onConverted(java.util.function.Consumer<vn.currencyconverter.feartures.history.model.ConversionRecord> action) { onConverted = action; }
@@ -24,7 +26,7 @@ public class ConverterPanel extends JPanel {
             var amount = new java.math.BigDecimal(input.replace(',', '.'));
             String code = currencyBox.getSelectedItem().toString().substring(0,3);
             var rate = rates.get(code);
-            if (rate == null) throw new IllegalArgumentException("File chưa có tỷ giá " + code + ". Hãy bổ sung dữ liệu hoặc chọn ngoại tệ khác.");
+            if (rate == null) throw new IllegalArgumentException("Nguồn chưa có tỷ giá " + code + ". Hãy cập nhật hoặc chọn ngoại tệ khác.");
             var price = transferRadio.isSelected() ? rate.getTransferRate() : rate.getBuyRate();
             if (price == null) throw new IllegalArgumentException("Không có tỷ giá cho hình thức đã chọn.");
             var value = new vn.currencyconverter.feartures.converter.service.CurrencyConverterService().convertToVnd(amount, price);
@@ -89,7 +91,7 @@ public class ConverterPanel extends JPanel {
         add(body, BorderLayout.CENTER);
 
         add(
-            new JLabel("Dữ liệu mẫu • CAD/SGD giả định • Không phải tỷ giá hiện hành"),
+            sourceStatus,
             BorderLayout.SOUTH
         );
     }

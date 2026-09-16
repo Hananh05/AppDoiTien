@@ -5,5 +5,5 @@ public class AppConstants {
     private AppConstants() {}
 
     // KHO CHỨA LINK API TẠI ĐÂY
-    public static final String VCB_API_URL = "https://portal.vietcombank.com.vn/Usercontrols/TVWeb.Portal.Reex/ExrateXML.aspx";
+    public static final String VCB_API_URL = "https://www.vietcombank.com.vn/api/exchangerates?date=";
 }
