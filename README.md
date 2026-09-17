@@ -67,14 +67,13 @@ src/vn/currencyconverter/
 │   ├── constants/       # URL nguồn dữ liệu
 │   ├── network/         # HttpClient dùng chung
 │   └── theme/           # Màu sắc và kiểu giao diện
-└── feartures/
+└── features/
     ├── home/ui/         # Cửa sổ chính và điều hướng
     ├── converter/       # Giao diện, nghiệp vụ quy đổi
     ├── exchange_rate/   # Model, parser JSON/XML, service, bảng tỷ giá
     └── history/         # Model, đọc/ghi file, giao diện lịch sử
 ```
 
-Tên `feartures` được giữ theo dự án hiện tại. Nếu đổi thành `features`, phải đổi đồng bộ thư mục, package và import.
 
 ## Lưu trữ và giới hạn
 
