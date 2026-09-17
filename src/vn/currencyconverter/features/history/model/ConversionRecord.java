@@ -1,9 +1,9 @@
-package vn.currencyconverter.feartures.history.model;
+package vn.currencyconverter.features.history.model;
 
-import vn.currencyconverter.feartures.exchange_rate.model.RateType;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import vn.currencyconverter.features.exchange_rate.model.RateType;
 
 public class ConversionRecord {
     private LocalDateTime timestamp; // Thời gian đổi tiền

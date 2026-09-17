@@ -1,4 +1,4 @@
-package vn.currencyconverter.feartures.home.ui;
+package vn.currencyconverter.features.home.ui;
 
 import java.awt.*;
 import java.util.LinkedHashMap;
@@ -6,17 +6,17 @@ import java.util.Map;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import vn.currencyconverter.core.theme.AppTheme;
-import vn.currencyconverter.feartures.converter.ui.ConverterPanel;
-import vn.currencyconverter.feartures.exchange_rate.ui.ExchangeRatePanel;
-import vn.currencyconverter.feartures.history.ui.HistoryPanel;
+import vn.currencyconverter.features.converter.ui.ConverterPanel;
+import vn.currencyconverter.features.exchange_rate.ui.ExchangeRatePanel;
+import vn.currencyconverter.features.history.ui.HistoryPanel;
 
 public class MainFrame extends JFrame {
 
-    private final vn.currencyconverter.feartures.exchange_rate.service.VietcombankRateService rateService = new vn.currencyconverter.feartures.exchange_rate.service.VietcombankRateService();
+    private final vn.currencyconverter.features.exchange_rate.service.VietcombankRateService rateService = new vn.currencyconverter.features.exchange_rate.service.VietcombankRateService();
     private final ConverterPanel converterPanel = new ConverterPanel();
     private final ExchangeRatePanel ratePanel = new ExchangeRatePanel();
     private final HistoryPanel historyPanel = new HistoryPanel();
-    private final vn.currencyconverter.feartures.history.service.ConversionHistoryService historyService = new vn.currencyconverter.feartures.history.service.ConversionHistoryService();
+    private final vn.currencyconverter.features.history.service.ConversionHistoryService historyService = new vn.currencyconverter.features.history.service.ConversionHistoryService();
     private final java.util.concurrent.ExecutorService historyExecutor = java.util.concurrent.Executors.newSingleThreadExecutor();
     private void loadHistory() {
         historyExecutor.submit(() -> {
@@ -31,8 +31,8 @@ public class MainFrame extends JFrame {
         ratePanel.setStatus("Đang kết nối Vietcombank...");
         converterPanel.setRates(java.util.List.of());
         converterPanel.setSourceStatus("Đang tải tỷ giá trực tuyến...");
-        new SwingWorker<java.util.List<vn.currencyconverter.feartures.exchange_rate.model.ExchangeRate>, Void>() {
-            protected java.util.List<vn.currencyconverter.feartures.exchange_rate.model.ExchangeRate> doInBackground() {
+        new SwingWorker<java.util.List<vn.currencyconverter.features.exchange_rate.model.ExchangeRate>, Void>() {
+            protected java.util.List<vn.currencyconverter.features.exchange_rate.model.ExchangeRate> doInBackground() {
                 return rateService.getLatestRates();
             }
             protected void done() {

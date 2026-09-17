@@ -1,4 +1,4 @@
-package vn.currencyconverter.feartures.converter.service;
+package vn.currencyconverter.features.converter.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

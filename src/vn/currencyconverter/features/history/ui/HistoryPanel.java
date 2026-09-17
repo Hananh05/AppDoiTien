@@ -1,4 +1,4 @@
-package vn.currencyconverter.feartures.history.ui;
+package vn.currencyconverter.features.history.ui;
 
 import java.awt.BorderLayout;
 import javax.swing.*;
@@ -8,7 +8,7 @@ import vn.currencyconverter.core.theme.AppTheme;
 public class HistoryPanel extends JPanel {
     private DefaultTableModel tableModel;
     private final JLabel status = new JLabel("Chưa có giao dịch quy đổi.");
-    public void setRecords(java.util.List<vn.currencyconverter.feartures.history.model.ConversionRecord> records) {
+    public void setRecords(java.util.List<vn.currencyconverter.features.history.model.ConversionRecord> records) {
         tableModel.setRowCount(0);
         for (var r : records) tableModel.addRow(new Object[]{r.getTimestamp(), r.getCurrencyCode(), r.getAmount(), r.getType(), r.rateApplied(), r.getResultVnd()});
         status.setText("Đã lưu " + records.size() + " giao dịch • Xem nguồn tỷ giá trước khi sử dụng");

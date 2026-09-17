@@ -1,5 +1,5 @@
-package vn.currencyconverter.feartures.exchange_rate.parser;
-import vn.currencyconverter.feartures.exchange_rate.model.ExchangeRate;
+package vn.currencyconverter.features.exchange_rate.parser;
+import vn.currencyconverter.features.exchange_rate.model.ExchangeRate;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.util.*;

@@ -1,9 +1,9 @@
-package vn.currencyconverter.feartures.exchange_rate.parser;
+package vn.currencyconverter.features.exchange_rate.parser;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.*;
-import vn.currencyconverter.feartures.exchange_rate.model.ExchangeRate;
+import vn.currencyconverter.features.exchange_rate.model.ExchangeRate;
 
 /** Reads the JSON response used by Vietcombank's exchange-rate page. */
 public final class ExchangeRateJsonParser {

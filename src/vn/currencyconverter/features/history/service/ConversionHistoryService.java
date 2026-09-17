@@ -1,7 +1,4 @@
-package vn.currencyconverter.feartures.history.service;
-
-import vn.currencyconverter.feartures.history.model.ConversionRecord;
-import vn.currencyconverter.feartures.exchange_rate.model.RateType;
+package vn.currencyconverter.features.history.service;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -19,6 +16,8 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import vn.currencyconverter.features.exchange_rate.model.RateType;
+import vn.currencyconverter.features.history.model.ConversionRecord;
 
 public class ConversionHistoryService {
 

@@ -1,4 +1,4 @@
-package vn.currencyconverter.feartures.exchange_rate.model;
+package vn.currencyconverter.features.exchange_rate.model;
 
 /**
  * Enum quản lý trạng thái giao dịch để tránh nhầm lẫn cột giá.

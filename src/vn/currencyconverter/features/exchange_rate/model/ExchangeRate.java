@@ -1,4 +1,4 @@
-package vn.currencyconverter.feartures.exchange_rate.model;
+package vn.currencyconverter.features.exchange_rate.model;
 
 import java.math.BigDecimal;
 

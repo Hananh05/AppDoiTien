@@ -1,9 +1,8 @@
-package vn.currencyconverter.feartures.exchange_rate.ui;
+package vn.currencyconverter.features.exchange_rate.ui;
 
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
 import vn.currencyconverter.core.theme.AppTheme;
 
 public class ExchangeRatePanel extends JPanel {
@@ -13,7 +12,7 @@ public class ExchangeRatePanel extends JPanel {
     public void onRefresh(Runnable action) { refreshButton.addActionListener(e -> action.run()); }
     public void setBusy(boolean busy) { refreshButton.setEnabled(!busy); }
     public void setStatus(String value) { status.setText(value); }
-    public void setRates(java.util.List<vn.currencyconverter.feartures.exchange_rate.model.ExchangeRate> rates) {
+    public void setRates(java.util.List<vn.currencyconverter.features.exchange_rate.model.ExchangeRate> rates) {
         tableModel.setRowCount(0);
         var allowed = java.util.Set.of("USD", "JPY", "GBP", "CAD", "AUD", "SGD");
         for (var r : rates) if (allowed.contains(r.getCurrencyCode())) tableModel.addRow(new Object[]{r.getCurrencyCode(), r.getCurrencyName(), r.getBuyRate(), r.getTransferRate(), r.getSellRate()});

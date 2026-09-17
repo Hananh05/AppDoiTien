@@ -1,16 +1,13 @@
-package vn.currencyconverter.feartures.exchange_rate.service;
-import vn.currencyconverter.core.constants.AppConstants;
-import vn.currencyconverter.core.network.HttpClientProvider;
-import vn.currencyconverter.feartures.exchange_rate.model.ExchangeRate;
-import vn.currencyconverter.feartures.exchange_rate.parser.ExchangeRateJsonParser;
+package vn.currencyconverter.features.exchange_rate.service;
+import java.io.*;
 import java.net.URI;
 import java.net.http.*;
 import java.time.Duration;
 import java.util.List;
-import java.io.*;
-import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilderFactory;
-import org.xml.sax.InputSource;
+import vn.currencyconverter.core.constants.AppConstants;
+import vn.currencyconverter.core.network.HttpClientProvider;
+import vn.currencyconverter.features.exchange_rate.model.ExchangeRate;
+import vn.currencyconverter.features.exchange_rate.parser.ExchangeRateJsonParser;
 public class VietcombankRateService {
     private String publishedAt = "Chưa tải dữ liệu";
     public String getPublishedAt() { return publishedAt; }

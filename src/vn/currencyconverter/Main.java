@@ -2,7 +2,7 @@ package vn.currencyconverter;
 
 import javax.swing.SwingUtilities;
 import vn.currencyconverter.core.theme.AppTheme;
-import vn.currencyconverter.feartures.home.ui.MainFrame;
+import vn.currencyconverter.features.home.ui.MainFrame;
 
 public class Main {
 

@@ -1,18 +1,17 @@
-package vn.currencyconverter.feartures.converter.ui;
+package vn.currencyconverter.features.converter.ui;
 
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-
 import vn.currencyconverter.core.theme.AppTheme;
 
 public class ConverterPanel extends JPanel {
     private final JLabel sourceStatus = new JLabel("Chưa có tỷ giá trực tuyến");
     public void setSourceStatus(String text) { sourceStatus.setText(text); }
-    private java.util.Map<String, vn.currencyconverter.feartures.exchange_rate.model.ExchangeRate> rates = new java.util.HashMap<>();
-    private java.util.function.Consumer<vn.currencyconverter.feartures.history.model.ConversionRecord> onConverted = record -> {};
-    public void onConverted(java.util.function.Consumer<vn.currencyconverter.feartures.history.model.ConversionRecord> action) { onConverted = action; }
-    public void setRates(java.util.List<vn.currencyconverter.feartures.exchange_rate.model.ExchangeRate> values) {
+    private java.util.Map<String, vn.currencyconverter.features.exchange_rate.model.ExchangeRate> rates = new java.util.HashMap<>();
+    private java.util.function.Consumer<vn.currencyconverter.features.history.model.ConversionRecord> onConverted = record -> {};
+    public void onConverted(java.util.function.Consumer<vn.currencyconverter.features.history.model.ConversionRecord> action) { onConverted = action; }
+    public void setRates(java.util.List<vn.currencyconverter.features.exchange_rate.model.ExchangeRate> values) {
         rates.clear();
         for (var value : values) rates.put(value.getCurrencyCode(), value);
         convertButton.setEnabled(!rates.isEmpty());
@@ -29,10 +28,10 @@ public class ConverterPanel extends JPanel {
             if (rate == null) throw new IllegalArgumentException("Nguồn chưa có tỷ giá " + code + ". Hãy cập nhật hoặc chọn ngoại tệ khác.");
             var price = transferRadio.isSelected() ? rate.getTransferRate() : rate.getBuyRate();
             if (price == null) throw new IllegalArgumentException("Không có tỷ giá cho hình thức đã chọn.");
-            var value = new vn.currencyconverter.feartures.converter.service.CurrencyConverterService().convertToVnd(amount, price);
+            var value = new vn.currencyconverter.features.converter.service.CurrencyConverterService().convertToVnd(amount, price);
             resultLabel.setText(java.text.NumberFormat.getNumberInstance(java.util.Locale.forLanguageTag("vi-VN")).format(value) + " VND");
-            var type = transferRadio.isSelected() ? vn.currencyconverter.feartures.exchange_rate.model.RateType.TRANSFER_BUY : vn.currencyconverter.feartures.exchange_rate.model.RateType.BUY;
-            onConverted.accept(new vn.currencyconverter.feartures.history.model.ConversionRecord(java.time.LocalDateTime.now(), code, amount, price, value, type));
+            var type = transferRadio.isSelected() ? vn.currencyconverter.features.exchange_rate.model.RateType.TRANSFER_BUY : vn.currencyconverter.features.exchange_rate.model.RateType.BUY;
+            onConverted.accept(new vn.currencyconverter.features.history.model.ConversionRecord(java.time.LocalDateTime.now(), code, amount, price, value, type));
         } catch (IllegalArgumentException e) {
             resultLabel.setText("— VND");
             JOptionPane.showMessageDialog(this, e.getMessage(), "Kiểm tra dữ liệu", JOptionPane.WARNING_MESSAGE);
